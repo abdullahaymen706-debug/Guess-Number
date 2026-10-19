@@ -3,7 +3,6 @@ body {
   display: block;
   background: #0a0130;
   color: #eee;
-  font-family: "Press Start 2P", cursive;
   min-height: 100vh;
   overflow-x: hidden;
 }
@@ -113,10 +112,6 @@ body .btn {
 }
 .again {
   margin: 50px !important;
-}
-body .btn:hover {
-  background: #ccc;
-  color: #222;
 }
 
 body .message {
