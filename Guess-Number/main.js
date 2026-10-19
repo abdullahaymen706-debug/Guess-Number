@@ -9,49 +9,64 @@ let again = document.querySelector(".again");
 let guessNum = Math.ceil(Math.random() * 20);
 console.log(guessNum);
 let playing = true;
-
-// Load the saved high score
 let bestScore = Number(localStorage.getItem("highScore")) || 0;
 highScore.textContent = bestScore;
+input.focus();
 
-input.addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    btnCheck.click();
-    if (guessNum === Number(input.value)) {
-      input.value === guessNum;
-      input.style.background = "black";
-    } else input.value = null;
-  }
-});
-
-btnCheck.addEventListener("click", function (event) {
+function checkGuess() {
   if (!playing) return;
-  // Return Here Stop The Function
-  if (input.value > 0 && input.value <= 20) {
-    if (Number(input.value) === guessNum) {
-      message.textContent = "Correct Number! 🎉";
-      document.body.style.background = "Green";
-      guessTrue.textContent = guessNum;
-      playing = false;
-      let currentScore = Number(score.textContent);
-      if (currentScore > bestScore) {
-        bestScore = currentScore;
-        localStorage.setItem("highScore", bestScore);
-        highScore.textContent = bestScore;
-      }
-    } else if (input.value > guessNum) {
-      score.textContent = Number(score.textContent) - 1;
-      message.textContent = "📈 Too High";
-    } else {
-      score.textContent = Number(score.textContent) - 1;
-      message.textContent = "📉 Too Low";
+  let value = Number(input.value);
+  if (!input.value || value < 1 || value > 20) {
+    message.textContent = "Enter a number from 1 to 20!";
+    return;
+  }
+  if (value === guessNum) {
+    message.textContent = "Correct Number! 🎉";
+    document.body.style.background = "Green";
+    guessTrue.textContent = guessNum;
+    playing = false;
+    let currentScore = Number(score.textContent);
+    if (currentScore > bestScore) {
+      bestScore = currentScore;
+      localStorage.setItem("highScore", bestScore);
+      highScore.textContent = bestScore;
+      message.textContent = "New High Score! 🏆";
     }
   } else {
-    alert("The Correct Value Between ( 1 To 20 )");
-    input.value = null;
+    score.textContent = Number(score.textContent) - 1;
+    message.textContent = value > guessNum ? "📈 Too High" : "📉 Too Low";
+    if (Number(score.textContent) <= 0) {
+      message.textContent = "Game Over! 😢";
+      playing = false;
+      guessTrue.textContent = guessNum;
+    }
+  }
+  input.value = "";
+  input.focus();
+}
+btnCheck.addEventListener("click", checkGuess);
+input.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    checkGuess();
   }
 });
-again.addEventListener("click", function (event) {
-  localStorage.removeItem("highScore");
-  location.reload();
+again.addEventListener("click", function () {
+  guessNum = Math.ceil(Math.random() * 20);
+  console.log(guessNum);
+  playing = true;
+  score.textContent = 20;
+  message.textContent = "Start guessing...";
+  guessTrue.textContent = "?";
+  document.body.style.background = "";
+  input.value = "";
+  input.disabled = false;
+  btnCheck.disabled = false;
+  input.focus();
 });
+input.addEventListener("input", function () {
+  if (input.value.length > 2) {
+    input.value = input.value.slice(0, 2);
+  }
+});
+
+
